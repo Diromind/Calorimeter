@@ -18,6 +18,6 @@ source venv/bin/activate
 
 # Install Python dependencies
 pip install --upgrade pip
-pip install fastapi uvicorn[standard] aiogram>3.0.0 aiohttp asyncpg python-dotenv psycopg2-binary yaml
+pip install fastapi uvicorn[standard] aiogram>3.0.0 aiohttp asyncpg python-dotenv psycopg2-binary pyyaml
 
 echo "Installation for 'server' module completed successfully!"
