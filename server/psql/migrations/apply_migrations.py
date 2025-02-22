@@ -10,16 +10,16 @@ config_path = os.path.join(os.environ["HOME"], "calorimeter/config.yaml")
 with open(config_path, "r") as f:
     config = yaml.safe_load(f)
 
-if "password" not in config["db"]:
-    print("Database password not found in config.yaml!")
+if "password" in config["db"]:
     DB_PASSWORD = config["db"]
     if not DB_PASSWORD:
-        print("Database password env var empty! Aborting")
+        print("Database password in config is empty! Aborting")
         exit(1)
 else:
+    print("Database password not found in config.yaml!")
     DB_PASSWORD = os.getenv('DB_PASSWORD')
     if not DB_PASSWORD:
-        print("Database password in config is empty! Aborting")
+        print("Database password env var empty! Aborting")
         exit(1)
 
 DB_CONFIG = {
