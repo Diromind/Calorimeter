@@ -4,3 +4,5 @@ aiogram>3.0.0
 aiohttp
 asyncpg
 python-dotenv
+yaml
+psycopg2
