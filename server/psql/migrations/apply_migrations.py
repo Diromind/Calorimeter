@@ -36,7 +36,7 @@ def create_backup():
     print("Creating database backup...")
 
     try:
-        print(DB_CONFIG["password"])
+        print("pg_dump", "-U", DB_CONFIG["user"], "-d", DB_CONFIG["dbname"], "-F", "c", "-f", BACKUP_FILE)
         subprocess.run(
             ["pg_dump", "-U", DB_CONFIG["user"], "-d", DB_CONFIG["dbname"], "-F", "c", "-f", BACKUP_FILE],
             check=True,
