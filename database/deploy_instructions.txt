@@ -1,0 +1,38 @@
+# Fetch password from Lockbox with (maybe should provide some roles to service account
+yc lockbox payload get DEPLOY_POSTGRES_PASSWORD
+
+DB_NAME='calorimeter_db'
+DB_USER='calorimeter_robot'
+DB_PSWD='password_that_you_get_from_yc'
+
+# Run following commands to install psql
+
+sudo apt update
+sudo apt install postgresql postgresql-contrib -y
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Switch to superuser and enter psql
+
+sudo -i -u postgres
+psql
+
+# inside psql console, add db, user, and grant permissions
+
+CREATE DATABASE $DB_NAME;
+CREATE USER $DB_USER WITH ENCRYPTED PASSWORD '$DB_PSWD';
+GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
+
+# quit from psql, and log out from superuser, and restart psql
+
+\q
+exit
+sudo systemctl restart postgresql
+
+# OPTIONAL: open external access to db
+
+sudo vim /etc/postgresql/14/main/postgresql.conf -> listen_addresses = '*'
+sudo vim /etc/postgresql/14/main/pg_hba.conf -> add line 'host    all    all    0.0.0.0/0    md5'
+sudo ufw allow 5432/tcp
+sudo systemctl restart postgresql
+
