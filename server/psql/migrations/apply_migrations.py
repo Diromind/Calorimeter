@@ -25,7 +25,7 @@ else:
 DB_CONFIG = {
     "dbname": config["db"]["name"],
     "user": config["db"]["user"],
-    "password": config["db"]["password"],
+    "password": DB_PASSWORD,
     "host": config["db"]["host"],
     "port": config["db"].get("port", 5432),
 }
