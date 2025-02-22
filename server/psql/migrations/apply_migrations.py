@@ -23,11 +23,11 @@ else:
         exit(1)
 
 DB_CONFIG = {
-    "dbname": config["db"]["name"],
-    "user": config["db"]["user"],
-    "password": DB_PASSWORD,
     "host": config["db"]["host"],
     "port": config["db"].get("port", 5432),
+    "database": config["db"]["name"],
+    "user": config["db"]["user"],
+    "password": DB_PASSWORD,
 }
 
 BACKUP_FILE = config["backup"]["file"]
@@ -36,11 +36,11 @@ def create_backup():
     print("Creating database backup...")
 
     try:
-        print("pg_dump", "-U", DB_CONFIG["user"], "-d", DB_CONFIG["dbname"], "-F", "c", "-f", BACKUP_FILE)
+        print("pg_dump", "-U", DB_CONFIG["user"], "-d", DB_CONFIG["database"], "-F", "c", "-f", BACKUP_FILE)
         subprocess.run(
             ["pg_dump", "-h", DB_CONFIG["host"],
                         "-U", DB_CONFIG["user"],
-                        "-d", DB_CONFIG["dbname"],
+                        "-d", DB_CONFIG["database"],
                         "-F", "c",
                         "-f", BACKUP_FILE],
             check=True,

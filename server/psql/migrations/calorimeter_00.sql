@@ -1,22 +1,13 @@
-CREATE SCHEMA calorimeter;
-
-GRANT CREATE, USAGE ON SCHEMA calorimeter TO calorimeter_robot;
-
-SET search_path TO calorimeter;
-
-
-
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE IF NOT EXISTS calorimeter.users (
+CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     telegram_id BIGINT UNIQUE NOT NULL,
     name VARCHAR(255),
     surname VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS calorimeter.records (
+CREATE TABLE IF NOT EXISTS records (
     uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Moscow';
