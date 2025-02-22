@@ -12,7 +12,15 @@ with open(config_path, "r") as f:
 
 if "password" not in config["db"]:
     print("Database password not found in config.yaml!")
-    exit(1)
+    DB_PASSWORD = config["db"]
+    if not DB_PASSWORD:
+        print("Database password env var empty! Aborting")
+        exit(1)
+else:
+    DB_PASSWORD = os.getenv('DB_PASSWORD')
+    if not DB_PASSWORD:
+        print("Database password in config is empty! Aborting")
+        exit(1)
 
 DB_CONFIG = {
     "dbname": config["db"]["name"],
