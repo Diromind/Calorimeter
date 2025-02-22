@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Starting install process for 'server' module"
+
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y python3 python3-pip python3-venv postgresql postgresql-contrib
 
@@ -18,4 +20,4 @@ source venv/bin/activate
 pip install --upgrade pip
 pip install fastapi uvicorn[standard] aiogram>3.0.0 aiohttp asyncpg python-dotenv
 
-echo "Installation completed successfully!"
+echo "Installation for 'server' module completed successfully!"
