@@ -31,7 +31,6 @@ DB_CONFIG = {
 }
 
 BACKUP_FILE = config["backup"]["file"]
-MIGRATIONS_FOLDER = config["migrations"]["folder"]
 
 def create_backup():
     print("Creating database backup...")
@@ -67,7 +66,7 @@ def run_migrations():
     applied_migrations = {row[0] for row in cursor.fetchall()}
 
     # Find all SQL migration files in order
-    migration_files = sorted(glob.glob(f"{MIGRATIONS_FOLDER}/*.sql"))
+    migration_files = sorted(glob.glob("*.sql"))
 
     for filepath in migration_files:
         filename = os.path.basename(filepath)
