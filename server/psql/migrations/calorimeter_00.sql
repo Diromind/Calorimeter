@@ -10,21 +10,21 @@ CREATE TABLE IF NOT EXISTS calorimeter.users (
 CREATE TABLE IF NOT EXISTS calorimeter.records (
     uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ DEFAULT NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Moscow';
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Moscow',
     value INT NOT NULL
 );
 
-CREATE OR REPLACE FUNCTION updated_at_hook()
+CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
-    NEW.update_at = NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'Europe/Moscow';
+    NEW.update_at = CURRENT_TIMESTAMP AT TIME ZONE 'Europe/Moscow';
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 
 -- Create trigger to call the update_timestamp function before each update
-CREATE TRIGGER updated_at_trigger
+CREATE TRIGGER update_records_updated_at
 BEFORE UPDATE ON records
 FOR EACH ROW
-EXECUTE FUNCTION updated_at_hook();
+EXECUTE FUNCTION update_timestamp();
