@@ -25,7 +25,7 @@ else:
 DB_CONFIG = {
     "host": config["db"]["host"],
     "port": config["db"].get("port", 5432),
-    "database": config["db"]["name"],
+    "dbname": config["db"]["name"],
     "user": config["db"]["user"],
     "password": DB_PASSWORD,
 }
@@ -36,11 +36,11 @@ def create_backup():
     print("Creating database backup...")
 
     try:
-        print("pg_dump", "-U", DB_CONFIG["user"], "-d", DB_CONFIG["database"], "-F", "c", "-f", BACKUP_FILE)
+        print("pg_dump", "-U", DB_CONFIG["user"], "-d", DB_CONFIG["dbname"], "-F", "c", "-f", BACKUP_FILE)
         subprocess.run(
             ["pg_dump", "-h", DB_CONFIG["host"],
                         "-U", DB_CONFIG["user"],
-                        "-d", DB_CONFIG["database"],
+                        "-d", DB_CONFIG["dbname"],
                         "-F", "c",
                         "-f", BACKUP_FILE],
             check=True,
@@ -58,7 +58,7 @@ def run_migrations():
 
     # Ensure the migrations table exists
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS migrations (
+        CREATE TABLE IF NOT EXISTS calorimeter.migrations (
             id SERIAL PRIMARY KEY,
             filename TEXT UNIQUE NOT NULL,
             applied_at TIMESTAMPTZ DEFAULT now()
