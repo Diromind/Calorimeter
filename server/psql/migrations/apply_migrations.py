@@ -67,7 +67,7 @@ def run_migrations():
     conn.commit()
 
     # Get already applied migrations
-    cursor.execute("SELECT filename FROM migrations;")
+    cursor.execute("SELECT filename FROM calorimeter.migrations;")
     applied_migrations = {row[0] for row in cursor.fetchall()}
 
     # Find all SQL migration files in order
