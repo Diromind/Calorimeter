@@ -71,7 +71,8 @@ def run_migrations():
     applied_migrations = {row[0] for row in cursor.fetchall()}
 
     # Find all SQL migration files in order
-    migration_files = sorted(glob.glob("*.sql"))
+    migr_path = os.path.join(os.environ["HOME"], "calorimeter/server/psql/migrations/*.sql")
+    migration_files = sorted(glob.glob(migr_path))
 
     for filepath in migration_files:
         filename = os.path.basename(filepath)
