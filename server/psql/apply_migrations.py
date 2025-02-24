@@ -4,7 +4,7 @@ import glob
 import subprocess
 import yaml
 
-import utils.fetch_lockbox_secret as utils
+from utils import fetch_lockbox_secret as utils
 
 config_path = os.path.join(os.environ["HOME"], "calorimeter/config.yaml")
 with open(config_path, "r") as f:
