@@ -1,7 +1,10 @@
 db:
-  name: calorimeter_db
-  user: calorimeter_robot
-  host: localhost
-  port: 5432
+    name: calorimeter_db
+    user: calorimeter_robot
+    host: localhost
+    port: 5432
+    pswd_secret_id: e6q44a41vtec974ool9a
 backup:
-  file: db_backup.dump
+    file: db_backup.dump
+telegram:
+    token_secret_id: e6q51ig25uln80vgprhn
