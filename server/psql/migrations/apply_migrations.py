@@ -89,7 +89,7 @@ def run_migrations():
         try:
             cursor.execute("BEGIN;")  # Start a transaction
             cursor.execute(sql)  # Run SQL migration
-            cursor.execute("INSERT INTO migrations (filename) VALUES (%s);", (filename,))
+            cursor.execute("INSERT INTO calorimeter.migrations (filename) VALUES (%s);", (filename,))
             cursor.execute("COMMIT;")  # Commit if successful
             conn.commit()
             print(f"{filename} applied successfully.")
