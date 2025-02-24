@@ -4,23 +4,17 @@ import glob
 import subprocess
 import yaml
 
-# Load config.yaml
+import utils.fetch_lockbox_secret as utils
 
 config_path = os.path.join(os.environ["HOME"], "calorimeter/config.yaml")
 with open(config_path, "r") as f:
     config = yaml.safe_load(f)
 
-if "password" in config["db"]:
-    DB_PASSWORD = config["db"]
-    if not DB_PASSWORD:
-        print("Database password in config is empty! Aborting")
-        exit(1)
+if "pswd_secret_id" in config["db"]:
+    DB_PASSWORD = utils.fetch_secret(config["db"]["pswd_secret_id"])
 else:
-    print("Database password not found in config.yaml!")
-    DB_PASSWORD = os.getenv('DB_PASSWORD')
-    if not DB_PASSWORD:
-        print("Database password env var empty! Aborting")
-        exit(1)
+    print("No lockbox id for DB password! Aborting")
+    exit(1)
 
 DB_CONFIG = {
     "host": config["db"]["host"],

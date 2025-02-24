@@ -21,5 +21,3 @@ def fetch_secret(secret_id):
     secret_data = response.json()
     return secret_data["entries"][0]["textValue"] if "entries" in secret_data else None
 
-
-get_iam_token()
