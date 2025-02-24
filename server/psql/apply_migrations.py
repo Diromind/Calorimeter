@@ -2,29 +2,26 @@ import psycopg2
 import os
 import glob
 import subprocess
-import yaml
 
 from utils import fetch_lockbox_secret as utils
+from utils import get_config
 
-config_path = os.path.join(os.environ["HOME"], "calorimeter/config.yaml")
-with open(config_path, "r") as f:
-    config = yaml.safe_load(f)
+config = get_config.get_config_value("db")
 
-if "pswd_secret_id" in config["db"]:
-    DB_PASSWORD = utils.fetch_secret(config["db"]["pswd_secret_id"])
+DB_CONFIG = {
+    "host": config["host"],
+    "port": config.get("port", 5432),
+    "dbname": config["name"],
+    "user": config["user"],
+}
+
+if "pswd_secret_id" in config:
+    DB_CONFIG["password"] = utils.fetch_secret(config["pswd_secret_id"])
 else:
     print("No lockbox id for DB password! Aborting")
     exit(1)
 
-DB_CONFIG = {
-    "host": config["db"]["host"],
-    "port": config["db"].get("port", 5432),
-    "dbname": config["db"]["name"],
-    "user": config["db"]["user"],
-    "password": DB_PASSWORD,
-}
-
-BACKUP_FILE = config["backup"]["file"]
+BACKUP_FILE = get_config.get_config_value("backup")["file"]
 
 def create_backup():
     print("Creating database backup...")
