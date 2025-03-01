@@ -21,7 +21,7 @@ else:
     print("No lockbox id for DB password! Aborting")
     exit(1)
 
-async def execute_sql_async(script: str):
+async def execute_sql_async(script: str, params: tuple):
     """Execute SQL script asynchronously using asyncpg."""
     conn = await asyncpg.connect(
         user=DB_CONFIG["user"],
@@ -31,11 +31,11 @@ async def execute_sql_async(script: str):
         port=DB_CONFIG["port"]
     )
     try:
-        await conn.execute(script)
+        await conn.execute(script, params)
     finally:
         await conn.close()
 
-def execute_sql_sync(script: str):
+def execute_sql_sync(script: str, params: tuple):
     """Execute SQL script synchronously using psycopg2."""
     conn = psycopg2.connect(
         user=DB_CONFIG["user"],
@@ -46,7 +46,7 @@ def execute_sql_sync(script: str):
     )
     try:
         with conn.cursor() as cursor:
-            cursor.execute(script)
+            cursor.execute(script, params)
         conn.commit()
     finally:
         conn.close()

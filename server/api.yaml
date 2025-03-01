@@ -16,9 +16,7 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/RecordInput'
+              $ref: '#/components/schemas/StoreRequest'
       responses:
         '200':
           description: Successfully stored records
@@ -27,18 +25,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/StoreResponse'
   /records:
-    get:
+    post:
       operationId: retrieveRecords
       summary: Retrieve records for a user
       description: >
-        Retrieve records for a given user. The query parameter `user_id` is required.
-      parameters:
-        - in: query
-          name: user_id
-          required: true
-          schema:
-            type: integer
-          description: ID of the user whose records are being requested
+        Retrieve records for a given user. The request body must include the user_id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordsRequest'
       responses:
         '200':
           description: A list of records for the user
@@ -53,13 +50,14 @@ paths:
       operationId: updateUser
       summary: Update user information
       description: >
-        Update user information for a given user. Accepts the user_id and optional fields for surname and name.
+        Update user information for a given user. The request body must include the user_id 
+        and optional fields for surname and name.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserUpdate'
+              $ref: '#/components/schemas/UserUpdateRequest'
       responses:
         '200':
           description: User information updated successfully
@@ -68,18 +66,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserInfo'
   /user_info:
-    get:
+    post:
       operationId: getUserInfo
       summary: Retrieve user information
       description: >
-        Get the user information for the specified user ID.
-      parameters:
-        - in: query
-          name: user_id
-          required: true
-          schema:
-            type: integer
-          description: ID of the user to retrieve
+        Get the user information for the specified user. The request body must include the user_id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserIdRequest'
       responses:
         '200':
           description: Successfully retrieved user information
@@ -89,23 +86,31 @@ paths:
                 $ref: '#/components/schemas/UserInfo'
 components:
   schemas:
-    RecordInput:
+    StoreRequestItem:
       type: object
       properties:
-        user_id:
+        value:
           type: integer
-          description: ID of the user creating the record
-        values:
-          type: array
-          items:
-            type: number
-          description: Array of numeric values associated with the record
+          description: Numeric value associated with the record
         description:
           type: string
           description: Optional description for the record
       required:
         - user_id
-        - values
+        - value
+    StoreRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user creating the record
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StoreRequestItem'
+      required:
+        - user_id
+        - items
     StoreResponse:
       type: object
       properties:
@@ -114,6 +119,17 @@ components:
           items:
             type: string
           description: UUIDs of the saved records
+      required:
+        - uuids
+
+    RecordsRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user
+      required:
+        - user_id
     RecordOutput:
       type: object
       properties:
@@ -123,7 +139,8 @@ components:
         user_id:
           type: integer
           description: ID of the user associated with the record
-    UserUpdate:
+
+    UserUpdateRequest:
       type: object
       properties:
         user_id:
@@ -149,3 +166,12 @@ components:
         name:
           type: string
           description: User's first name
+
+    UserIdRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user
+      required:
+        - user_id
