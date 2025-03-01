@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS calorimeter.users (
 
 CREATE TABLE IF NOT EXISTS calorimeter.records (
     uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id INT REFERENCES calorimeter.users(id) ON DELETE CASCADE,
+    user_id INT REFERENCES calorimeter.users(telegram_id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     value INT NOT NULL
