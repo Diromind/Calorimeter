@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import FastAPI
 
-from impl.models import (
+from server.app.impl.models import (
     RecordOutput,
     RecordsRequest,
     StoreRequest,
@@ -12,7 +12,7 @@ from impl.models import (
     UserUpdateRequest,
 )
 
-from impl.bulk_store_records import bulk_store_records
+from server.app.impl.bulk_store_records import bulk_store_records
 
 app = FastAPI(
     title='Calorimeter API',

@@ -1,6 +1,6 @@
 import os
 import uuid
-from models import StoreRequest, StoreResponse
+from server.app.impl.models import StoreRequest, StoreResponse
 from server.utils.psql_executor import execute_sql_async
 
 async def bulk_store_records(body: StoreRequest) -> StoreResponse:
