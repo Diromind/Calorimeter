@@ -12,7 +12,7 @@ from server.app.impl.models import (
     UserUpdateRequest,
 )
 
-from server.app.impl.bulk_store_records import bulk_store_records
+from server.app.impl.bulk_store_records import bulk_store_records as bulk_store_records_impl
 
 app = FastAPI(
     title='Calorimeter API',
@@ -34,7 +34,7 @@ async def bulk_store_records(body: StoreRequest) -> StoreResponse:
     """
     Bulk store records
     """
-    return await bulk_store_records(body)
+    return await bulk_store_records_impl(body)
 
 
 @app.post('/update_user', response_model=UserInfo)

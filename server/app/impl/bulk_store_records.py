@@ -10,7 +10,7 @@ async def bulk_store_records(body: StoreRequest) -> StoreResponse:
     For each record, generates a new UUID and executes an upsert using the SQL script.
     """
     uuids = []
-    script_path = os.path.join(os.path.dirname(__file__), '..', 'psql', 'scripts', 'upsert_calories.sql')
+    script_path = os.path.join(os.path.dirname(__file__), '..', '..', 'psql', 'scripts', 'upsert_calories.sql')
     with open(script_path, 'r') as f:
         upsert_sql = f.read().strip()
 
