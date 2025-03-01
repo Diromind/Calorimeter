@@ -46,7 +46,7 @@ def execute_sql_sync(script: str, params: tuple):
     )
     try:
         with conn.cursor() as cursor:
-            cursor.execute(script, params)
+            cursor.execute(script, *params)
         conn.commit()
     finally:
         conn.close()
