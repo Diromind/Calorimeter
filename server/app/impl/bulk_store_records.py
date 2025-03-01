@@ -23,6 +23,6 @@ async def bulk_store_records(body: StoreRequest) -> StoreResponse:
             item.value,
             item.description if item.description is not None else None,
         )
-        await execute_sql_async(upsert_sql, params)
+        await execute_sql_async(upsert_sql, *params)
 
     return StoreResponse(uuids=uuids)
