@@ -1,0 +1,151 @@
+openapi: 3.0.3
+info:
+  title: Calorimeter API
+  version: "1.0.0"
+  description: "An API for managing calorimeter records"
+paths:
+  /store:
+    post:
+      operationId: bulkStoreRecords
+      summary: Bulk store records
+      description: >
+        Store one or more records. Each record includes a user_id, a list of numeric values,
+        and an optional description. Returns the UUIDs of the saved records.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/RecordInput'
+      responses:
+        '200':
+          description: Successfully stored records
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreResponse'
+  /records:
+    get:
+      operationId: retrieveRecords
+      summary: Retrieve records for a user
+      description: >
+        Retrieve records for a given user. The query parameter `user_id` is required.
+      parameters:
+        - in: query
+          name: user_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the user whose records are being requested
+      responses:
+        '200':
+          description: A list of records for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordOutput'
+  /update_user:
+    post:
+      operationId: updateUser
+      summary: Update user information
+      description: >
+        Update user information for a given user. Accepts the user_id and optional fields for surname and name.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User information updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+  /user_info:
+    get:
+      operationId: getUserInfo
+      summary: Retrieve user information
+      description: >
+        Get the user information for the specified user ID.
+      parameters:
+        - in: query
+          name: user_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to retrieve
+      responses:
+        '200':
+          description: Successfully retrieved user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+components:
+  schemas:
+    RecordInput:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user creating the record
+        values:
+          type: array
+          items:
+            type: number
+          description: Array of numeric values associated with the record
+        description:
+          type: string
+          description: Optional description for the record
+      required:
+        - user_id
+        - values
+    StoreResponse:
+      type: object
+      properties:
+        uuids:
+          type: array
+          items:
+            type: string
+          description: UUIDs of the saved records
+    RecordOutput:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Unique identifier of the record
+        user_id:
+          type: integer
+          description: ID of the user associated with the record
+    UserUpdate:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user to update
+        surname:
+          type: string
+          description: Optional surname of the user
+        name:
+          type: string
+          description: Optional first name of the user
+      required:
+        - user_id
+    UserInfo:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: User's ID
+        surname:
+          type: string
+          description: User's surname
+        name:
+          type: string
+          description: User's first name
