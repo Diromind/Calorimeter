@@ -1,7 +1,5 @@
-import asyncio
 import asyncpg
 import psycopg2
-import yaml
 
 from utils import fetch_lockbox_secret as utils
 from utils import get_config
@@ -31,7 +29,7 @@ async def execute_sql_async(script: str, params: tuple):
         port=DB_CONFIG["port"]
     )
     try:
-        await conn.execute(script, params)
+        await conn.execute(script, *params)
     finally:
         await conn.close()
 
