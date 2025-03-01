@@ -5,22 +5,56 @@ from aiogram import types
 API_URL = "http://localhost:8000/store"
 
 
+def parse_store_command(text: str) -> (int, str):
+    """
+    Parse the store command text.
+    Expects one integer and optionally a description.
+    Order doesn't matter. Returns (measurement, description).
+    Raises ValueError if no integer is found.
+    """
+    tokens = text.split()
+    if len(tokens) > 2:
+        raise ValueError("Provide no more than 2 arguments")
+    if len(tokens) == 0:
+        raise ValueError("Provide at least one argument")
+
+    value = None
+    description = None
+
+    for token in tokens:
+        try:
+            value = int(token)
+        except ValueError:
+            description = token
+
+    if value is None:
+        raise ValueError("No integer value found in the command.")
+    if description is None and len(tokens) > 1:
+        raise ValueError(f"Can't parse this sequence: {tokens}")
+
+    return value, description
+
 async def handle_store(message: types.Message):
     """
     Handler for the /store command.
     Constructs a store request payload based on the Telegram user's message,
     sends it to the API using aiohttp, and replies with the result.
     """
+
+    args = message.get_args()
+
+    try:
+        value, desc = parse_store_command(args)
+    except ValueError as e:
+        await message.reply(f"Error parsing command: {e}")
+        return
+
     payload = {
-        "user_id": message.from_user.id,
         "items": [
             {
-                "value": 123,
-                "description": "Record from Telegram command"
-            },
-            {
-                "value": 456,
-                "description": "Dummy msg"
+                "user_id": message.from_user.id,
+                "values": [value],
+                "description": desc
             }
         ]
     }
@@ -28,10 +62,8 @@ async def handle_store(message: types.Message):
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(API_URL, json=payload) as response:
-                # Raise an exception for non-2xx responses.
-                response.raise_for_status()
+                response.raise_for_status()  # Raise an exception for non-2xx responses.
                 data = await response.json()
-                # Expecting API response to include an "inserted_count" field.
                 inserted_count = data.get("inserted_count", "unknown")
                 reply_text = f"Store command executed successfully. Inserted count: {inserted_count}."
     except Exception as e:
