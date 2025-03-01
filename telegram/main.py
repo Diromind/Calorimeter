@@ -9,12 +9,11 @@ from utils import get_config
 from telegram.impl.store import handle_store
 
 config = get_config.get_config_value("telegram")
-API_TOKEN = utils.fetch_secret("token_secret_id")
+API_TOKEN = utils.fetch_secret(config["token_secret_id"])
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-# Register the /store command handler.
 dp.message.register(handle_store, Command("store"))
 
 async def on_start():
