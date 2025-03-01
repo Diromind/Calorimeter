@@ -19,7 +19,7 @@ async def bulk_store_records(body: StoreRequest) -> StoreResponse:
         uuids.append(record_uuid)
         params = (
             record_uuid,
-            item.user_id,
+            body.user_id,
             item.value,
             item.description if item.description is not None else None,
         )
