@@ -5,14 +5,14 @@ from aiogram import types
 API_URL = "http://localhost:8000/store"
 
 
-def parse_store_command(text: str) -> (int, str):
+def parse_store_command(message: types.Message) -> (int, str):
     """
     Parse the store command text.
     Expects one integer and optionally a description.
     Order doesn't matter. Returns (measurement, description).
     Raises ValueError if no integer is found.
     """
-    tokens = text.split()
+    tokens = message.text.split()[1:]
     if len(tokens) > 2:
         raise ValueError("Provide no more than 2 arguments")
     if len(tokens) == 0:
@@ -41,10 +41,8 @@ async def handle_store(message: types.Message):
     sends it to the API using aiohttp, and replies with the result.
     """
 
-    args = message.get_args()
-
     try:
-        value, desc = parse_store_command(args)
+        value, desc = parse_store_command(message)
     except ValueError as e:
         await message.reply(f"Error parsing command: {e}")
         return
