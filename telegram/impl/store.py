@@ -48,10 +48,10 @@ async def handle_store(message: types.Message):
         return
 
     payload = {
+        "user_id": message.from_user.id,
         "items": [
             {
-                "user_id": message.from_user.id,
-                "values": [value],
+                "value": value,
                 "description": desc
             }
         ]
