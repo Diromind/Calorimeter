@@ -62,7 +62,7 @@ async def handle_store(message: types.Message):
             async with session.post(API_URL, json=payload) as response:
                 response.raise_for_status()  # Raise an exception for non-2xx responses.
                 data = await response.json()
-                inserted_count = data.get("inserted_count", "unknown")
+                inserted_count = len(data.get("uuids", []))
                 reply_text = f"Store command executed successfully. Inserted count: {inserted_count}."
     except Exception as e:
         logging.exception("Error calling store API")
