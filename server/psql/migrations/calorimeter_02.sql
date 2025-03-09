@@ -6,7 +6,11 @@ CREATE TABLE IF NOT EXISTS calorimeter.places (
 CREATE TABLE IF NOT EXISTS calorimeter.items (
     item_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     item_name VARCHAR(255) NOT NULL,
-    place_id UUID REFERENCES calorimeter.places(place_id)
+    place_id UUID REFERENCES calorimeter.places(place_id),
+    calories FLOAT NOT NULL,
+    proteins FLOAT,
+    fats FLOAT,
+    carbs FLOAT
 );
 
 CREATE INDEX IF NOT EXISTS idx_places_place_id

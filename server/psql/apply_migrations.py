@@ -88,7 +88,7 @@ def run_migrations():
             cursor.execute("ROLLBACK;")  # Undo changes on error
             print(f"Error applying {filename}: {e}")
             print("Migration process aborted.")
-            break
+            exit(1)
 
     cursor.close()
     conn.close()
