@@ -1,8 +1,12 @@
 CREATE TABLE IF NOT EXISTS calorimeter.places (
+    place_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    place_name VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS calorimeter.items (
     item_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    place_id INT NOT NULL,
     item_name VARCHAR(255) NOT NULL,
-    place_name VARCHAR(255) NOT NULL
+    place_id UUID REFERENCES calorimeter.places(place_id)
 );
 
 CREATE INDEX IF NOT EXISTS idx_places_place_id
@@ -13,12 +17,17 @@ ADD COLUMN item_uuid UUID;
 
 ALTER TABLE calorimeter.records
 ADD CONSTRAINT fk_records_places_item_uuid
-FOREIGN KEY (item_uuid) REFERENCES calorimeter.places(item_id)
+FOREIGN KEY (item_uuid) REFERENCES calorimeter.items(item_id)
 ON DELETE SET NULL;
 
+ALTER TABLE calorimeter.records
+ALTER COLUMN user_id SET NOT NULL,
+ALTER COLUMN created_at SET NOT NULL,
+ALTER COLUMN updated_at SET NOT NULL;
+
 CREATE TYPE calorimeter.stat AS (
-    records_count INT,
-    total_value INT
+    records_count INT NOT NULL,
+    total_value INT NOT NULL
 );
 
 CREATE TABLE calorimeter.statistics (
