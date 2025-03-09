@@ -26,8 +26,8 @@ ALTER COLUMN created_at SET NOT NULL,
 ALTER COLUMN updated_at SET NOT NULL;
 
 CREATE TYPE calorimeter.stat AS (
-    records_count INT NOT NULL,
-    total_value INT NOT NULL
+    records_count INT,
+    total_value INT
 );
 
 CREATE TABLE calorimeter.statistics (
