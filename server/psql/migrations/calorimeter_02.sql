@@ -21,7 +21,7 @@ CREATE TYPE calorimeter.stat AS (
     total_value INT
 );
 
-CREATE TABLE calorimeter.weekly_stats (
+CREATE TABLE calorimeter.statistics (
     uuid UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id BIGINT NOT NULL REFERENCES calorimeter.users(telegram_id),
     first_day_of_period DATE NOT NULL,
