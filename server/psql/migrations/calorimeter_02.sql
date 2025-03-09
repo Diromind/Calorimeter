@@ -13,7 +13,7 @@ ADD COLUMN item_uuid UUID;
 
 ALTER TABLE calorimeter.records
 ADD CONSTRAINT fk_records_places_item_uuid
-FOREIGN KEY (item_uuid) REFERENCES calorimeter.places(uuid)
+FOREIGN KEY (item_uuid) REFERENCES calorimeter.places(item_id)
 ON DELETE SET NULL;
 
 CREATE TYPE calorimeter.stat AS (
