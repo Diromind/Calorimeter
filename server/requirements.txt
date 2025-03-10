@@ -6,3 +6,4 @@ asyncpg
 python-dotenv
 pyyaml
 psycopg2
+pytest-postgresql

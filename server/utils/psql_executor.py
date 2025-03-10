@@ -1,3 +1,5 @@
+import os
+
 import asyncpg
 import psycopg2
 
@@ -18,6 +20,12 @@ if "pswd_secret_id" in config:
 else:
     print("No lockbox id for DB password! Aborting")
     exit(1)
+
+def get_sql_script(name: str) -> str:
+    script_path = os.path.join(os.path.dirname(__file__), '..', 'psql', 'scripts', f'{name}.sql')
+    with open(script_path, 'r') as f:
+        script = f.read().strip()
+    return script
 
 async def execute_sql_async(script: str, params: tuple):
     """Execute SQL script asynchronously using asyncpg."""

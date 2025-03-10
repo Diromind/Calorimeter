@@ -86,31 +86,8 @@ paths:
                 $ref: '#/components/schemas/UserInfo'
 components:
   schemas:
-    StoreRequestItem:
-      type: object
-      properties:
-        value:
-          type: integer
-          description: Numeric value associated with the record
-        description:
-          type: string
-          description: Optional description for the record
-      required:
-        - user_id
-        - value
-    StoreRequest:
-      type: object
-      properties:
-        user_id:
-          type: integer
-          description: ID of the user creating the record
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/StoreRequestItem'
-      required:
-        - user_id
-        - items
+
+
     StoreResponse:
       type: object
       properties:
@@ -160,6 +137,9 @@ components:
         user_id:
           type: integer
           description: User's ID
+        telegram_id:
+          type: integer
+          description: User's tg id
         surname:
           type: string
           description: User's surname

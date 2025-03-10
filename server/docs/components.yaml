@@ -1,0 +1,46 @@
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        item_name:
+          type: string
+          description: Name of item
+        calories:
+          type: numeric
+          description: Calories value associated with the item
+        proteins:
+          type: numeric
+          description: Proteins value associated with the item
+        fats:
+          type: numeric
+          description: Fats value associated with the item
+        carbs:
+          type: numeric
+          description: Carbonates value associated with the item
+      required:
+        - calories
+      additionalProperties: false
+
+    StoreRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: ID of the user creating the record
+        tg_id:
+          type: integer
+          description: TG ID of the user creating the record
+        items:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Item'
+              - type: integer
+          description: Sequence of new (with info to save) or old (with id) items
+      required:
+        - items
+      anyOf:
+        - required: [ "user_id" ]
+        - required: [ "tg_id" ]
+      additionalProperties: false

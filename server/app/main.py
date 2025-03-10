@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import FastAPI
 
-from server.app.impl.models import (
+from server.app.handles.models import (
     RecordOutput,
     RecordsRequest,
     StoreRequest,
@@ -12,7 +12,7 @@ from server.app.impl.models import (
     UserUpdateRequest,
 )
 
-from server.app.impl.bulk_store_records import bulk_store_records as bulk_store_records_impl
+from server.app.handles.store import store_handle
 
 app = FastAPI(
     title='Calorimeter API',
@@ -22,7 +22,7 @@ app = FastAPI(
 
 
 @app.post('/records', response_model=List[RecordOutput])
-async def retrieve_records(body: RecordsRequest) -> List[RecordOutput]:
+async def records(body: RecordsRequest) -> List[RecordOutput]:
     """
     Retrieve records for a user
     """
@@ -30,11 +30,11 @@ async def retrieve_records(body: RecordsRequest) -> List[RecordOutput]:
 
 
 @app.post('/store', response_model=StoreResponse)
-async def bulk_store_records(body: StoreRequest) -> StoreResponse:
+async def store(body: StoreRequest) -> StoreResponse:
     """
     Bulk store records
     """
-    return await bulk_store_records_impl(body)
+    return await store_handle(body)
 
 
 @app.post('/update_user', response_model=UserInfo)

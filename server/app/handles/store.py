@@ -1,18 +1,21 @@
 import os
 import uuid
-from server.app.impl.models import StoreRequest, StoreResponse
+from server.app.handles.models import StoreRequest, StoreResponse
+
+from server.app.impl.store import get_user_id
+
 from server.utils.psql_executor import execute_sql_async
 
-async def bulk_store_records(body: StoreRequest) -> StoreResponse:
+
+async def store_handle(body: StoreRequest) -> StoreResponse:
     """
     Implementation for the /store endpoint.
     Expects a StoreRequest (an object with an 'items' key containing an array of records).
     For each record, generates a new UUID and executes an upsert using the SQL script.
     """
+    user_id = get_user_id(body)
+
     uuids = []
-    script_path = os.path.join(os.path.dirname(__file__), '..', '..', 'psql', 'scripts', 'upsert_calories.sql')
-    with open(script_path, 'r') as f:
-        upsert_sql = f.read().strip()
 
     for item in body.items:
         record_uuid = str(uuid.uuid4())

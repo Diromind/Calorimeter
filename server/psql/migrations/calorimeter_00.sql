@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS calorimeter.records (
     user_id INT REFERENCES calorimeter.users(telegram_id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    value INT NOT NULL
 );
 
 CREATE OR REPLACE FUNCTION calorimeter.update_timestamp()

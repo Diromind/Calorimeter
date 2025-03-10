@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Run this once on new pod to download all deps
+# We assuming you already got git and cloned repo
+
 echo "Starting install process for 'server' module"
 
 sudo apt update && sudo apt upgrade -y
