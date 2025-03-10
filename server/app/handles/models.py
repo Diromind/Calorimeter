@@ -2,7 +2,7 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field, model_validator
 
-from server.app.impl.db_models import Item
+from calorimeter.server.app.impl.db_models import Item
 
 class StoreRequest(BaseModel):
     user_id: Optional[int] = None
