@@ -3,14 +3,18 @@ import asyncpg
 
 from calorimeter.utils import get_config
 from calorimeter.utils import fetch_lockbox_secret
+from calorimeter.server.utils import psql_executor
 
-@pytest.fixture(name="service_db", scope="session")
+@pytest.fixture(name="calorimeter_db", scope="session")
 async def _service_db(postgresql_proc):
     dsn = postgresql_proc.dsn()
     pool = await asyncpg.create_pool(dsn)
     yield pool
     await pool.close()
 
+@pytest.fixture(autouse=True)
+def patch_asyncpg_connection(monkeypatch, calorimeter_db):
+    monkeypatch.setattr(psql_executor, "asyncpg_connection", lambda : calorimeter_db)
 
 @pytest.fixture(autouse=True)
 def patch_config(monkeypatch):

@@ -12,7 +12,7 @@ def make_db_config():
     db_config = {
         "host": config["host"],
         "port": config.get("port", 5432),
-        "dbname": config["name"],
+        "database": config["name"],
         "user": config["user"],
     }
 
@@ -28,21 +28,33 @@ def make_db_config():
 DB_CONFIG = make_db_config()
 
 
-def get_sql_script(name: str) -> str:
+def read_sql_script(name: str) -> str:
     script_path = os.path.join(os.path.dirname(__file__), '..', 'psql', 'scripts', f'{name}.sql')
     with open(script_path, 'r') as f:
         script = f.read().strip()
     return script
 
-async def execute_sql_async(script: str, params: tuple):
-    """Execute SQL script asynchronously using asyncpg."""
-    conn = await asyncpg.connect(
+async def asyncpg_connection():
+    return await asyncpg.connect(
         user=DB_CONFIG["user"],
         password=DB_CONFIG["password"],
-        database=DB_CONFIG["dbname"],
+        database=DB_CONFIG["database"],
         host=DB_CONFIG["host"],
         port=DB_CONFIG["port"]
     )
+
+def psycopg2_connection():
+    return psycopg2.connect(
+        user=DB_CONFIG["user"],
+        password=DB_CONFIG["password"],
+        database=DB_CONFIG["database"],
+        host=DB_CONFIG["host"],
+        port=DB_CONFIG["port"]
+    )
+
+async def execute_sql_async(script: str, params: tuple):
+    """Execute SQL script asynchronously using asyncpg."""
+    conn = await asyncpg_connection()
     try:
         await conn.execute(script, *params)
     finally:
@@ -50,13 +62,7 @@ async def execute_sql_async(script: str, params: tuple):
 
 def execute_sql_sync(script: str, params: tuple):
     """Execute SQL script synchronously using psycopg2."""
-    conn = psycopg2.connect(
-        user=DB_CONFIG["user"],
-        password=DB_CONFIG["password"],
-        database=DB_CONFIG["dbname"],
-        host=DB_CONFIG["host"],
-        port=DB_CONFIG["port"]
-    )
+    conn = psycopg2_connection()
     try:
         with conn.cursor() as cursor:
             cursor.execute(script, *params)

@@ -6,20 +6,26 @@ import subprocess
 from utils import fetch_lockbox_secret as utils
 from utils import get_config
 
-config = get_config.get_config_value("db")
+def make_db_config():
+    config = get_config.get_config_value("db")
 
-DB_CONFIG = {
-    "host": config["host"],
-    "port": config.get("port", 5432),
-    "dbname": config["name"],
-    "user": config["user"],
-}
+    db_config = {
+        "host": config["host"],
+        "port": config.get("port", 5432),
+        "dbname": config["name"],
+        "user": config["user"],
+    }
 
-if "pswd_secret_id" in config:
-    DB_CONFIG["password"] = utils.fetch_secret(config["pswd_secret_id"])
-else:
-    print("No lockbox id for DB password! Aborting")
-    exit(1)
+    if "pswd_secret_id" in config:
+        db_config["password"] = utils.fetch_secret(config["pswd_secret_id"])
+    else:
+        print("No lockbox id for DB password! Aborting")
+        exit(1)
+
+    return db_config
+
+
+DB_CONFIG = make_db_config()
 
 BACKUP_FILE = get_config.get_config_value("backup")["file"]
 

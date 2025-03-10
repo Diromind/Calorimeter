@@ -8,6 +8,7 @@ from server.app.handles.models import StoreRequest
 from server.app.impl.users import select_user_by_tg_id
 from server.app.impl.exceptions import RequestMissingDataException
 
+
 async def get_user_id(body: StoreRequest) -> UUID4:
     if body.user_id:
         user_id = body.user_id
