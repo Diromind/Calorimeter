@@ -9,7 +9,7 @@ class User(BaseModel):
     name: Optional[str]
     surname: Optional[str]
 
-class Item:
+class Item(BaseModel):
     item_id: UUID4
     item_name: Optional[str]
     place_id: Optional[UUID4]
