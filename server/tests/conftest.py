@@ -1,8 +1,8 @@
 import pytest
 import asyncpg
 
-from utils import get_config
-from utils import fetch_lockbox_secret
+from calorimeter.utils import get_config
+from calorimeter.utils import fetch_lockbox_secret
 
 @pytest.fixture(name="service_db", scope="session")
 async def _service_db(postgresql_proc):
@@ -37,8 +37,8 @@ def patch_config(monkeypatch):
 def patch_fetch_secret(monkeypatch):
     # Define a mapping of secret IDs to test secret values.
     test_secrets = {
-        "id1": "test_secret_value_1",
-        "id2": "test_secret_value_2",
+        "test_secret_id_for_pg_pswd": "password_mock",
+        "test_tg_token": "telegram_token_mock",
     }
     # Replace fetch_secret with a lambda that returns a value from our dict.
     monkeypatch.setattr(fetch_lockbox_secret, "fetch_secret", lambda secret_id: test_secrets.get(secret_id))

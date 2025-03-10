@@ -3,9 +3,8 @@ import os
 import asyncpg
 import psycopg2
 
-from server.psql.apply_migrations import DB_CONFIG
-from utils import fetch_lockbox_secret as utils
-from utils import get_config
+from calorimeter.utils import fetch_lockbox_secret as utils
+from calorimeter.utils import get_config
 
 def make_db_config():
     config = get_config.get_config_value("db")
