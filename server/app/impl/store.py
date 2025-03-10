@@ -2,11 +2,11 @@ from typing import List
 
 from pydantic import UUID4
 
-from server.app.impl.db_models import Item
-from server.app.handles.models import StoreRequest
+from calorimeter.server.app.impl.db_models import Item
+from calorimeter.server.app.handles.models import StoreRequest
 
-from server.app.impl.users import select_user_by_tg_id
-from server.app.impl.exceptions import RequestMissingDataException
+from calorimeter.server.app.impl.users import select_user_by_tg_id
+from calorimeter.server.app.impl.exceptions import RequestMissingDataException
 
 
 async def get_user_id(body: StoreRequest) -> UUID4:
