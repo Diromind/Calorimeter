@@ -9,10 +9,40 @@ from calorimeter.server.psql import apply_migrations
 
 from urllib.parse import urlparse
 
+from server.psql.apply_migrations import run_migrations
+
+
+@pytest.fixture(autouse=True)
+def patch_psycopg2_connection(monkeypatch, postgresql_proc):
+    # Manually build connection parameters from postgresql_proc's attributes.
+    host = getattr(postgresql_proc, "host", "localhost")
+    port = getattr(postgresql_proc, "port", 5432)
+    dbname = getattr(postgresql_proc, "dbname", "postgres")
+    user = getattr(postgresql_proc, "user", "postgres")
+    # Set a test password; ensure it matches what your secret patch returns.
+    password = "test_password"
+
+    def fake_psycopg2_connect(**kwargs):
+        # Ignores kwargs and connects using the temporary DB credentials.
+        return psycopg2.connect(
+            host=host,
+            port=port,
+            dbname=dbname,
+            user=user,
+            password=password,
+        )
+
+    # Patch psycopg2.connect globally as well as any wrapper in your utils.
+    monkeypatch.setattr(psycopg2, "connect", fake_psycopg2_connect)
+    monkeypatch.setattr(psql_executor, "psycopg2_connection", fake_psycopg2_connect)
+
 @pytest.fixture(name="calorimeter_db", scope="session")
 async def _service_db(postgresql_proc):
     dsn = postgresql_proc.dsn()
     pool = await asyncpg.create_pool(dsn)
+
+    apply_migrations.run_migrations()
+
     yield pool
     await pool.close()
 
@@ -50,28 +80,3 @@ def patch_fetch_secret(monkeypatch):
     }
     # Replace fetch_secret with a lambda that returns a value from our dict.
     monkeypatch.setattr(fetch_lockbox_secret, "fetch_secret", lambda secret_id: test_secrets.get(secret_id))
-
-
-@pytest.fixture(autouse=True)
-def patch_psycopg2_connection(monkeypatch, postgresql_proc):
-    # Manually build connection parameters from postgresql_proc's attributes.
-    host = getattr(postgresql_proc, "host", "localhost")
-    port = getattr(postgresql_proc, "port", 5432)
-    dbname = getattr(postgresql_proc, "dbname", "postgres")
-    user = getattr(postgresql_proc, "user", "postgres")
-    # Set a test password; ensure it matches what your secret patch returns.
-    password = "test_password"
-
-    def fake_psycopg2_connect(**kwargs):
-        # Ignores kwargs and connects using the temporary DB credentials.
-        return psycopg2.connect(
-            host=host,
-            port=port,
-            dbname=dbname,
-            user=user,
-            password=password,
-        )
-
-    # Patch psycopg2.connect globally as well as any wrapper in your utils.
-    monkeypatch.setattr(psycopg2, "connect", fake_psycopg2_connect)
-    monkeypatch.setattr(psql_executor, "psycopg2_connection", fake_psycopg2_connect)
