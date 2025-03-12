@@ -54,24 +54,24 @@ def patch_fetch_secret(monkeypatch):
 
 @pytest.fixture(autouse=True)
 def patch_psycopg2_connection(monkeypatch, postgresql_proc):
-    # Parse the DSN from postgresql_proc
-    dsn = postgresql_proc.dsn()
-    parsed = urlparse(dsn)
+    # Manually build connection parameters from postgresql_proc's attributes.
+    host = getattr(postgresql_proc, "host", "localhost")
+    port = getattr(postgresql_proc, "port", 5432)
+    dbname = getattr(postgresql_proc, "dbname", "postgres")
+    user = getattr(postgresql_proc, "user", "postgres")
+    # Set a test password; ensure it matches what your secret patch returns.
+    password = "test_password"
 
     def fake_psycopg2_connect(**kwargs):
-        # Ignore any passed kwargs and connect using our test DSN.
-        # Note: We use a hard-coded password ("test_password")
-        # which should match what your fetch_secret monkeypatch returns.
-        return psycopg2.connect(
-            host=parsed.hostname,
-            port=parsed.port,
-            dbname=parsed.path.lstrip("/"),
-            user=parsed.username,
-            password="test_password"
+        # Ignores kwargs and connects using the temporary DB credentials.
+        return _original_psycopg2_connect(
+            host=host,
+            port=port,
+            dbname=dbname,
+            user=user,
+            password=password,
         )
 
-    # Patch psycopg2.connect so that any call in run_migrations() uses our fake connector.
-    monkeypatch.setattr(apply_migrations, "connect", fake_psycopg2_connect)
-    # Optionally, if you have a wrapper function for psycopg2 connections,
-    # patch it as well. For example, if psql_executor exposes psycopg2_connection():
-    monkeypatch.setattr(apply_migrations, "psycopg2_connection", fake_psycopg2_connect)
+    # Patch psycopg2.connect globally as well as any wrapper in your utils.
+    monkeypatch.setattr(psycopg2, "connect", fake_psycopg2_connect)
+    monkeypatch.setattr(psql_executor, "psycopg2_connection", fake_psycopg2_connect)
