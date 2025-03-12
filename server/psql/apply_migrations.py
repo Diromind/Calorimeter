@@ -48,9 +48,18 @@ def create_backup():
         print("Backup failed! Aborting migrations.")
         exit(1)
 
+def psycopg2_connection():
+    return psycopg2.connect(
+        user=DB_CONFIG["user"],
+        password=DB_CONFIG["password"],
+        database=DB_CONFIG["database"],
+        host=DB_CONFIG["host"],
+        port=DB_CONFIG["port"]
+    )
+
 def run_migrations():
     """Runs all pending migrations."""
-    conn = psycopg2.connect(**DB_CONFIG)
+    conn = psycopg2_connection()
     cursor = conn.cursor()
 
     # Ensure the migrations table exists
