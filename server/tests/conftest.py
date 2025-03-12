@@ -64,7 +64,7 @@ def patch_psycopg2_connection(monkeypatch, postgresql_proc):
 
     def fake_psycopg2_connect(**kwargs):
         # Ignores kwargs and connects using the temporary DB credentials.
-        return _original_psycopg2_connect(
+        return psycopg2.connect(
             host=host,
             port=port,
             dbname=dbname,
